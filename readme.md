@@ -1,5 +1,9 @@
 Corgi rust version
-- [ ] listen to port and print content
-- [ ] prettify output
-- [ ] timestamp
+- [x] listen to port and print content
+- [ ] prettify headers
+- [ ] prettify body
+- [ ] make req reusable
+- [ ] make resp reusable
+- [ ] add remote addr
+- [ ] add timestamp
 - [ ] max content length
