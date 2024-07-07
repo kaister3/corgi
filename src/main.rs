@@ -53,7 +53,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     }
 }
 
-async fn handle_req_v2(req: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
+async fn handle_req_v2(req: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, hyper::Error> {
     println!("{} {} {:?}", req.method(), req.uri(), req.version());
     println!("headers: ");
     let header_string = req.headers().iter().map(|(k, v)| {
@@ -62,7 +62,13 @@ async fn handle_req_v2(req: Request<hyper::body::Incoming>) -> Result<Response<F
     .join("\n");
     println!("{}", header_string);
     println!("body: ");
-    // req.into_body()
+    // todo add a body length limit
+    let upper = req.body().size_hint().upper().unwrap_or(u64::MAX);
+    if upper > 64 * 1024 {
+        todo!("body too big")
+    }
+    let whole_body = req.collect().await?.to_bytes();
+    println!("{:?}", whole_body);
 
     Ok(Response::new(Full::new(Bytes::from("woof woof"))))
 }
